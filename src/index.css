@@ -43,3 +43,37 @@ body {
   flex-direction: column;
   /* Add other desired styles as needed (font properties, colors, etc.) */
 }
+#game-over {
+  z-index: 999;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: rgba(205, 133, 63, 0.8); /* Warm copper with transparency */
+  border-radius: 15px; /* Rounded corners */
+  backdrop-filter: blur(5px) saturate(1.2); /* Slight blur and color enhancement */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3); /* Optional drop shadow */
+}
+
+#high-score {
+  color: #ffb347; /* Rich copper color */
+  font-family: 'Exo 2', sans-serif; /* Futuristic font (consider including font file) */
+  font-size: 3em;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Subtle drop shadow for text */
+}
+
+#high-score-value {
+  color: inherit; /* Inherit color from .high-score */
+  font-size: 2em;
+}
+
+p {
+  color: #ffb347; /* Match text color */
+  font-family: 'Exo 2', sans-serif; /* Use the same font */
+  font-size: 1.2em;
+}

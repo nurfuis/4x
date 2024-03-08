@@ -1,14 +1,17 @@
-import './index.css';
+import "./index.css";
 import { BACKGROUND_COLOR, HEIGHT, WIDTH } from "./app/constants";
-import { Vector2 } from "./app/utils/Vector2";
 
+import { Vector2 } from "./app/utils/Vector2";
 import { GameObject } from "./app/objects/gameObject";
 import { GameLoop } from "./app/utils/gameLoop";
+
 import { Player } from "./app/objects/Player";
-import { Input } from "./app/utils/Input";
-import { AutomatedInput } from "./app/utils/AutomatedInput";
+
 import { Creature } from "./app/objects/Creature";
 import { Spawner } from "./app/Spawner";
+
+import { Input } from "./app/utils/Input";
+import { AutomatedInput } from "./app/utils/AutomatedInput";
 
 const display = document.querySelector("#display");
 display.width = WIDTH;
@@ -17,8 +20,6 @@ display.style.backgroundColor = BACKGROUND_COLOR;
 const ctx = display.getContext("2d");
 
 let main;
-let input;
-let automatedInput;
 
 const update = (delta) => {
   main.stepEntry(delta, main);
@@ -32,67 +33,104 @@ const draw = () => {
 const gameLoop = new GameLoop(update, draw);
 gameLoop.name = "mainLoop";
 
-let player;
-let creature;
-let spawner;
+function startGame() {
 
-const TIMER = 100000;
+  const TIMER = 12;
 
-const startScreen = document.getElementById("start-screen");
-let gameStarted = false; // Flag to track game state
+  const startScreen = document.getElementById("start-screen");
+  const gameOverScreen = document.getElementById("game-over");
+  const highScoreValue = document.getElementById("high-score-value");
+  const highScoreText = document.getElementById("high-score");
 
-let remainingTime = TIMER; // Set a timer duration (in seconds)
-let timerInterval; // Store the timer interval reference
+  gameOverScreen.style.display = "none";
 
-function gameOver() {
-  // Display final score or any other end-game logic
-  gameLoop.stop();
-  gameStarted = false;
+  let gameStarted = false;
+  let remainingTime = TIMER;
+  let timerInterval;
 
-  player = undefined;
-  creature = undefined;
-  spawner = undefined;
+  let player;
+  let creature;
+  let spawner;
 
-  startScreen.style.display = ""; // Hide start screen
+  function gameOver() {
+    // localStorage.setItem("high-score", JSON.stringify({ score: 0 }));
 
-  // You can add here actions like displaying a game over screen or restarting the game
-}
+    const score = player.ability.damageDealt;
 
-function startTimer() {
-  timerInterval = setInterval(() => {
-    remainingTime--;
-    if (remainingTime <= 0) {
-      clearInterval(timerInterval);
-      gameOver(); // Call the end event function
+    const highScore = JSON.parse(localStorage.getItem("high-score")).score;
+    
+    gameLoop.stop();
+    gameStarted = false;
+    
+    if (score > highScore) {
+      // new hi score
+      localStorage.setItem("high-score", JSON.stringify({ score }));
+      highScoreText.innerHTML = "NEW HIGH SCORE!";
+
+      highScoreValue.innerHTML = score;
+    
+    } else if (score < highScore) {
+      highScoreValue.innerHTML = highScore;
+      highScoreText.innerHTML = "Current High Score";
+
     }
-  }, 1000); // Update every second
-}
 
-startScreen.addEventListener("click", () => {
-  if (!gameStarted) {
-    gameStarted = true;
-    startScreen.style.display = "none";
+    player = undefined;
+    creature = undefined;
+    spawner = undefined;
 
-    main = new GameObject({ position: new Vector2(0, 0) });
-    input = new Input();
-    automatedInput = new AutomatedInput();
+    gameOverScreen.style.display = "";
 
-    player = new Player();
-    player.position.x =  WIDTH / 2;
-    player.position.y = HEIGHT / 2;
-
-    creature = new Creature();
-    spawner = new Spawner(Creature);
-
-    main.addChild(player);
-    main.addChild(creature);
-    main.spawner = spawner;
-    // main.input = input;
-    main.automatedInput = automatedInput;
-
-    gameLoop.start();
-
-    remainingTime = TIMER;
-    startTimer(); // Start the timer
+    // You can add here actions like displaying a game over screen or restarting the game
   }
-});
+
+  function startTimer() {
+    timerInterval = setInterval(() => {
+      remainingTime--;
+      if (remainingTime <= 0) {
+        clearInterval(timerInterval);
+        gameOver();
+      }
+    }, 1000); // Update every second
+  }
+
+  function init() {
+    if (!gameStarted) {
+      const input = new Input();
+      const automatedInput = new AutomatedInput();
+
+      main = new GameObject({ position: new Vector2(0, 0) });
+
+      player = new Player();
+      player.position.x = WIDTH / 2;
+      player.position.y = HEIGHT / 2;
+
+      creature = new Creature();
+      spawner = new Spawner(Creature);
+
+      main.addChild(player);
+      main.addChild(creature);
+      main.spawner = spawner;
+
+      // main.input = input;
+      main.automatedInput = automatedInput;
+
+      remainingTime = TIMER;
+      startTimer();
+
+      gameLoop.start();
+
+      startScreen.style.display = "none";
+      gameStarted = true;
+    }
+  }
+  startScreen.addEventListener("click", () => {
+    init();
+  });
+  gameOverScreen.addEventListener("click", () => {
+    gameOverScreen.style.display = "none";
+
+    init();
+  });
+}
+startGame();
