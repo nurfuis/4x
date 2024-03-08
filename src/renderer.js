@@ -1,13 +1,13 @@
 import './index.css';
 import { BACKGROUND_COLOR, HEIGHT, WIDTH } from "./app/constants";
-import { Vector2 } from "./app/Vector2";
+import { Vector2 } from "./app/utils/Vector2";
 
-import { GameObject } from "./app/gameObject";
-import { GameLoop } from "./app/gameLoop";
-import { Player } from "./app/Player";
-import { Input } from "./app/Input";
-import { AutomatedInput } from "./app/Automatedinput";
-import { Creature } from "./app/Creature";
+import { GameObject } from "./app/objects/gameObject";
+import { GameLoop } from "./app/utils/gameLoop";
+import { Player } from "./app/objects/Player";
+import { Input } from "./app/utils/Input";
+import { AutomatedInput } from "./app/utils/AutomatedInput";
+import { Creature } from "./app/objects/Creature";
 import { Spawner } from "./app/Spawner";
 
 const display = document.querySelector("#display");
@@ -36,7 +36,7 @@ let player;
 let creature;
 let spawner;
 
-const TIMER = 10;
+const TIMER = 100000;
 
 const startScreen = document.getElementById("start-screen");
 let gameStarted = false; // Flag to track game state
