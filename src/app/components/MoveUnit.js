@@ -22,42 +22,30 @@ export class MoveUnit {
   }
 
   up(distance) {
-    const newY = this.entity.position.y - distance;
-    this.clampY(newY);
-
-    this.notify({ x: this.entity.position.x, y: newY });
+    return this.clampY(this.entity.position.y - distance);
   }
 
   down(distance) {
-    const newY = this.entity.position.y + distance;
-    this.clampY(newY);
-
-    this.notify({ x: this.entity.position.x, y: newY });
+    return this.clampY(this.entity.position.y + distance)
   }
 
   left(distance) {
-    const newX = this.entity.position.x - distance;
-    this.clampX(newX);
-
-    this.notify({ x: newX, y: this.entity.position.y });
+    return this.clampX(this.entity.position.x - distance);
   }
 
   right(distance) {
-    const newX = this.entity.position.x + distance;
-    this.clampX(newX);
-
-    this.notify({ x: newX, y: this.entity.position.y });
+    return this.clampY(this.entity.position.x + distance);
   }
 
   clampX(newX) {
-    this.entity.position.x = Math.max(
+    return Math.max(
       this.boundaries.minX,
       Math.min(newX, this.boundaries.maxX - this.entity.width)
     );
   }
 
   clampY(newY) {
-    this.entity.position.y = Math.max(
+    return Math.max(
       this.boundaries.minY,
       Math.min(newY, this.boundaries.maxY - this.entity.height)
     );

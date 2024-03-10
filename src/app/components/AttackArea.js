@@ -25,10 +25,9 @@ export class AttackArea {
     this.observers.forEach((observer) => observer.update(damage));
   }
 
-  attack() {
-    const targets = this.findTargets();
+  attack(root) {
+    const targets = this.findTargets(root);
     const damagePerTarget = this.calculateDamagePerTarget(targets.length);
-
     for (const target of targets) {
       if (target !== this.entity) {
         target.health.subtract(damagePerTarget);
@@ -37,10 +36,13 @@ export class AttackArea {
         this.notify(damagePerTarget);
       }
     }
+    return { targets, damagePerTarget };
   }
 
-  findTargets() {
-    const children = this.entity.parent.children;
+  findTargets(root) {
+    const targetId = "ground";
+    const layer = root.layers.find((layer) => layer.id === targetId);    
+    const children = layer.children;
     return children.filter((child) => {
       return child instanceof Creature && this.isInRange(child);
     });
@@ -52,8 +54,8 @@ export class AttackArea {
   }
 
   getDistance(target) {
-    const dx = target.position.x - this.entity.position.x;
-    const dy = target.position.y - this.entity.position.y;
+    const dx = target.center.x - this.entity.center.x;
+    const dy = target.center.y - this.entity.center.y;
     return Math.sqrt(dx * dx + dy * dy);
   }
 

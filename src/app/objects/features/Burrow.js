@@ -1,5 +1,6 @@
 import { Vector2 } from "../../utils/Vector2";
 import { GameObject } from "../GameObject";
+import { Creature } from "../Creature";
 
 export class Burrow extends GameObject {
   constructor() {
@@ -15,12 +16,31 @@ export class Burrow extends GameObject {
     this.color = "rgba(170, 135, 54, 1)";
     this.stroke = "rgba(26, 17, 16, 1)";
 
+    this.residents = [];
   }
 
-  ready() {}
+  addResident(root) {
+    const newCreature = new Creature();
+    newCreature.position.x = this.position.x;
+    newCreature.position.y = this.position.y;
+    newCreature.burrow = this;
+    this.residents.push(newCreature);
+
+    const targetId = "ground";
+    const ground = root.layers.find((layer) => layer.id === targetId);
+    ground.addChild(newCreature);
+  }
+  landSurvey() {
+
+  }
+  ready() {
+    this.landSurvey();
+  }
 
   step(delta, root) {
-  
+    if (this.residents.length === 0) {
+      this.addResident(root);
+    }
   }
 
   drawImage(ctx) {

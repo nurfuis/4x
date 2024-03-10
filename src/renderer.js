@@ -3,7 +3,7 @@ import { BACKGROUND_COLOR, HEIGHT, WIDTH } from "./app/constants";
 
 import { Vector2 } from "./app/utils/Vector2";
 import { GameObject } from "./app/objects/GameObject";
-import { GameLoop } from "./app/utils/gameLoop";
+import { GameLoop } from "./app/utils/GameLoop";
 
 import { Player } from "./app/objects/Player";
 
@@ -11,7 +11,6 @@ import { Input } from "./app/utils/Input";
 import { AutomatedInput } from "./app/utils/AutomatedInput";
 import { Kill } from "./app/objects/layers/kill";
 import { World } from "./app/objects/layers/World";
-
 
 const display = document.querySelector("#display");
 display.width = WIDTH;
@@ -34,7 +33,7 @@ const gameLoop = new GameLoop(update, draw);
 gameLoop.name = "mainLoop";
 
 function startGame() {
-  const TIMER = 60;
+  const TIMER = 600;
 
   const input = new Input();
   const automatedInput = new AutomatedInput();
@@ -51,6 +50,8 @@ function startGame() {
 
   let kill;
   let world;
+  let ground;
+  let sky;
   let player;
 
   function endTurn() {
@@ -92,7 +93,7 @@ function startGame() {
     if (!gameStarted) {
       main = new GameObject({ position: new Vector2(0, 0) });
 
-        // Comment out input to enable automated player
+      // Comment out input to enable automated player
       // main.input = input;
       main.automatedInput = automatedInput;
 
@@ -103,6 +104,16 @@ function startGame() {
       world = new World();
       main.layers.push(world);
       main.addChild(world);
+
+      ground = new GameObject({ position: new Vector2(0, 0) });
+      ground.id = "ground";
+      main.layers.push(ground)
+      main.addChild(ground);
+
+      sky = new GameObject({ position: new Vector2(0, 0) });
+      sky.id = "sky";
+      main.layers.push(sky)
+      main.addChild(sky);
 
       player = new Player();
       player.position.x = WIDTH / 2;

@@ -1,4 +1,5 @@
 import { Vector2 } from "../../utils/Vector2";
+import { Creature } from "../Creature";
 import { GameObject } from "../GameObject";
 
 export class Granary extends GameObject {
@@ -15,12 +16,27 @@ export class Granary extends GameObject {
     this.color = "rgba(204, 195, 202, 1)";
     this.stroke = "rgba(26, 17, 16, 1)";
 
+    this.residents = [];
+  }
+
+  addResident(root) {
+    const newAvian = new Creature();
+    newAvian.position.x = this.position.x;
+    newAvian.position.y = this.position.y;
+    newAvian.granary = this;
+    this.residents.push(newAvian);
+
+    const targetId = "sky";
+    const sky = root.layers.find((layer) => layer.id === targetId);
+    // sky.addChild(newAvian);
   }
 
   ready() {}
 
   step(delta, root) {
-  
+    if (this.residents.length === 0) {
+      this.addResident(root);
+    }
   }
 
   drawImage(ctx) {

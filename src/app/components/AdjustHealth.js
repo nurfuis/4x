@@ -1,7 +1,7 @@
 export class AdjustHealth {
   constructor(entity) {
     this.entity = entity;
-    this.maxHealth = 100000; // Set a default maximum health
+    this.maxHealth = 1000; // Set a default maximum health
     this.minHealth = 0; // Set a default minimum health
     this.entity.currentHealth = this.maxHealth; // Initialize health to maximum
     this.observers = [];
