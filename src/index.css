@@ -43,7 +43,7 @@ body {
   flex-direction: column;
   /* Add other desired styles as needed (font properties, colors, etc.) */
 }
-#game-over {
+#end-turn {
   z-index: 999;
   position: absolute;
   top: 0;
@@ -54,9 +54,9 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background-color: rgba(205, 133, 63, 0.8); /* Warm copper with transparency */
+  background-color: rgba(205, 133, 63, 0.05); /* Warm copper with transparency */
   border-radius: 15px; /* Rounded corners */
-  backdrop-filter: blur(5px) saturate(1.2); /* Slight blur and color enhancement */
+  backdrop-filter: blur(2px) saturate(1.2); /* Slight blur and color enhancement */
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3); /* Optional drop shadow */
 }
 
@@ -70,6 +70,7 @@ body {
 #high-score-value {
   color: inherit; /* Inherit color from .high-score */
   font-size: 2em;
+  display: none;
 }
 
 p {

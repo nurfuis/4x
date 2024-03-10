@@ -23,7 +23,16 @@ export class GameObject {
     }
     this.step(delta, root);
   }
-
+  get center() {
+    if (this.position && this.width && this.height) {
+      const x = Math.floor(this.position.x + this.width / 2);
+      const y = Math.floor(this.position.y + this.height / 2);
+      return new Vector2(x, y);
+    } else {
+      return this.position.duplicate();
+    }
+  }
+  
   ready() {}
 
   step(delta) {}
@@ -53,4 +62,5 @@ export class GameObject {
     events.unsubscribe(gameObject);
     this.children = this.children.filter((g) => g !== gameObject);
   }
+
 }

@@ -1,14 +1,10 @@
-import { Creature } from "../objects/Creature";
-
-export class AttackArea {
-  constructor(entity, damage, radius, maxTargets) {
+export class GatherResource {
+  constructor(entity, radius, maxTargets) {
     this.entity = entity;
-    this.damage = damage;
     this.radius = radius;
     this.maxTargets = maxTargets;
-    this.damageDealt = 0;
+    this.totalGathered = 0;
     this.observers = [];
-    this.scoreCounter = document.getElementById("score-counter");
   }
   subscribe(observer) {
     this.observers.push(observer);
@@ -21,21 +17,29 @@ export class AttackArea {
     }
   }
 
-  notify(damage) {
-    this.observers.forEach((observer) => observer.update(damage));
+  notify(gatheredCount) {
+    this.observers.forEach((observer) => observer.update(gatheredCount));
   }
 
-  attack() {
-    const targets = this.findTargets();
-    const damagePerTarget = this.calculateDamagePerTarget(targets.length);
+  collect(resources) {
+    const targets = resources.children;
+    let gatheredCount = 0;
 
     for (const target of targets) {
-      if (target !== this.entity) {
-        target.health.subtract(damagePerTarget);
-        this.damageDealt += damagePerTarget;
-        this.scoreCounter.textContent = this.damageDealt;
-        this.notify(damagePerTarget);
+      // Check if target is an Acorn and within range
+      if (target.constructor.name === "Acorn" && this.isInRange(target)) {
+        this.totalGathered++;
+        target.destroy();
+        gatheredCount++;
+        if (gatheredCount >= this.maxTargets) {
+          break; // Stop gathering after reaching max limit
+        }
       }
+    }
+
+    // Notify observers only if resources were gathered
+    if (gatheredCount > 0) {
+      this.notify(this.totalGathered);
     }
   }
 
@@ -55,12 +59,5 @@ export class AttackArea {
     const dx = target.position.x - this.entity.position.x;
     const dy = target.position.y - this.entity.position.y;
     return Math.sqrt(dx * dx + dy * dy);
-  }
-
-  calculateDamagePerTarget(numTargets) {
-    if (numTargets === 0) {
-      return 0;
-    }
-    return Math.floor(this.damage / numTargets);
   }
 }

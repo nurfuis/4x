@@ -2,9 +2,11 @@ import { randomInt } from "../utils/randomInt.js";
 import { AutomatedInput } from "../utils/AutomatedInput.js";
 import { Vector2 } from "../utils/Vector2.js";
 import { MoveUnit } from "../components/MoveUnit.js";
-import { GameObject } from "./gameObject.js";
+import { GameObject } from "./GameObject.js";
 import { AdjustHealth } from "../components/AdjustHealth.js";
 import { Shrink } from "../components/subscribers/Shrink.js";
+import { GatherResource } from "../components/GatherResource.js";
+import { Procreate } from "../components/subscribers/Procreate.js";
 
 export class Creature extends GameObject {
   constructor() {
@@ -18,34 +20,24 @@ export class Creature extends GameObject {
 
     this.move = new MoveUnit(this);
     this.health = new AdjustHealth(this);
+    this.ability = new GatherResource(this, this.radius * 2, 1);
+
     this.size = new Shrink(this);
+    this.procreate = new Procreate(this);
 
     this.input = new AutomatedInput();
   }
 
-  get center() {
-    if (this.position && this.width && this.height) {
-      const x = Math.floor(this.position.x + this.width / 2);
-      const y = Math.floor(this.position.y + this.height / 2);
-      return new Vector2(x, y);
-    } else {
-      return this.position.duplicate();
-    }
-  }
-  ready() {}
-
-  step(delta, root) {
-    if (this.currentHealth <= 0) {
-      this.destroy();
-    }    
-
+  trySpawn(root) {
     const random = randomInt(0, 10);
     const { spawner } = root;
 
     if (random === 0 && spawner.count < spawner.max) {
       this.parent.addChild(spawner.spawn());
     }
+  }
 
+  tryMove() {
     if (this.input.direction) {
       switch (this.input.direction) {
         case "LEFT":
@@ -62,6 +54,23 @@ export class Creature extends GameObject {
           break;
       }
     }
+  }
+  reproduce() {
+    const offspring = new Creature();
+    offspring.position = this.position.duplicate();
+    this.parent.addChild(offspring);
+
+  }
+
+  ready() {}
+
+  step(delta, root) {
+    if (this.currentHealth <= 0) {
+      this.destroy();
+    }
+    this.trySpawn(root);
+    this.tryMove();
+    this.ability.collect(root.resources);
   }
 
   drawImage(ctx) {

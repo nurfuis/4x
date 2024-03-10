@@ -8,6 +8,7 @@ export class Grow {
     update(damage) {
       const scaleFactor = damage / 10000; 
       this.entity.radius += scaleFactor; 
+      this.entity.mass += scaleFactor * 10;
     }
   }
   
